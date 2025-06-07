@@ -23,14 +23,17 @@ class Estudiante(Persona):
         self.materias.append(materia)
         print("Se inscribió correctamente")
         #También hay que cargar esa materia al diccionario de notas, con la lista de notas vacia
-        self.notas[materia] = [0] #Inicia en 0, para que no tire error cuando se calcula el promedio
+        self.notas[materia] = [] #Inicia vacío
+        #También hay que cargar al estudiante en la lista de estudiantes de la materia
+        materia.estudiantes.append(self)
 
     def verNotas(self):
-        print(f"Notas del alumno {self.nombre}") 
+        print(f"Notas del alumno/a {self.nombre}") 
         for datos in self.notas.items():
             print(f"Notas de la materia '{datos[0].nombre}'")
             #datos[0] seria la instancia materia, que seria la clave
-            total_materias = len(datos[1])
+            total_materias = len(datos[1]) #O len(self.materias) también
+            suma = 0
             for nota in datos[1]: #datos[1] seria el valor del diccioanrio que en este caso es una lista con las notas
                 suma += nota 
                 print(nota)
@@ -87,6 +90,7 @@ while salir == True:
         nombre_materia = input("Ingrese el nombre de la nueva materia")        
         nueva_materia = Materia(nombre_materia) #Para crear una materia solo necesito el nombre
         todas_materias.append(nueva_materia)
+        print("Materia creada exitosamente")
 
     elif entrada == "4":
         #Buscar el estudiante y la materia 
@@ -97,11 +101,11 @@ while salir == True:
 
         estudianteEncontrado.inscribirseMateria(materiaEncontrada)
     elif entrada == "5":
-        #Buscar el estudiante y la materia 
+        #Buscar el estudiante y la materia dentro de las materias del estudiante 
         estudianteAbuscar = input("Ingrese el nombre del estudiante al que desea cargar una nota")
         materiaAbuscar = input("Ingrese el nombre de la materia")
         estudianteEncontrado = buscar(estudianteAbuscar, todos_estudiantes)
-        materiaEncontrada = buscar(materiaAbuscar, todas_materias)
+        materiaEncontrada = buscar(materiaAbuscar, estudianteEncontrado.materias)
 
         nota = float(input("Ingrese la nota que desea cargar"))
         estudianteEncontrado.notas[materiaEncontrada].append(nota)
@@ -134,7 +138,7 @@ while salir == True:
 
         print("Lista de todos los profesores")
         for profesor in todos_profesores: 
-            print(f"Nombre: {profesor.nombre}\ndni:{profesor.dni}\nmateria:{profesor.materia}\n")
+            print(f"Nombre: {profesor.nombre}\ndni:{profesor.dni}\nmateria:{profesor.materia.nombre}\n")
         
         print("Lista de todas las materias")
         for materia in todas_materias: 
